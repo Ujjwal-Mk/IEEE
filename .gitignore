@@ -1,0 +1,10 @@
+fer2013plus/
+data/
+__pycache__
+high
+models/
+history
+*.pth
+*.txt
+*.png
+*.h5
