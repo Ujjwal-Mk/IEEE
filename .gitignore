@@ -6,5 +6,4 @@ models/
 history
 *.pth
 *.txt
-*.png
 *.h5
