@@ -2,6 +2,7 @@ fer2013plus/
 data/
 __pycache__
 high
+history_var
 models/
 history
 *.pth
