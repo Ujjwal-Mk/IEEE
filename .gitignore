@@ -8,3 +8,7 @@ history
 *.pth
 *.txt
 *.h5
+tensorboard/
+hist_dict/
+plot_model/
+time_var/
