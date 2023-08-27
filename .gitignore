@@ -7,3 +7,6 @@ history
 *.pth
 *.txt
 *.h5
+history_var/
+plot_model/
+time_var/
