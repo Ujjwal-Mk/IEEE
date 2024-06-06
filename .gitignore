@@ -7,7 +7,6 @@ models/
 history_var
 history
 *.pth
-*.txt
 *.h5
 *.zip
 *.keras
