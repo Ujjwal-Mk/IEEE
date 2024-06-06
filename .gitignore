@@ -1,17 +1,17 @@
-fer2013plus/
+fer2013*
+.vscode
 data/
 __pycache__
 high
 models/
+history_var
 history
 *.pth
 *.txt
 *.h5
-<<<<<<< HEAD
-tensorboard/
-hist_dict/
-=======
+*.zip
+*.keras
 history_var/
->>>>>>> 33c3ff2f48cbc131da3ea655d8cfe792a7b15e82
 plot_model/
+tensor*/
 time_var/

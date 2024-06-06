@@ -286,3 +286,146 @@ def calculate_results(y_true, y_pred):
                   "recall": model_recall,
                   "f1": model_f1}
   return model_results
+import pickle
+def load_variables(filename=[],vars2=[]):
+    for i in range(len(filename)):
+        with open(f'time_var/{filename[i]}', 'rb') as file:
+            vars2.append(pickle.load(file))
+
+
+def json_dump(filepath: str = "", filenames: list = [], dicts: list = []) -> None:
+    """
+    Saves dictionary variables as json files
+
+    Args:
+    filepath (str): path to save the file. Default is current directory
+    filename (list of strings): names for each saved file
+    dicts (list of dictionaires): data to be stored in a file
+
+    Returns: None
+
+    """
+    import json
+    if (len(filenames) != len(dicts)):
+        raise ValueError("Input size Incompatible")
+    for i in range(len(filenames)):
+        python_obj = eval(str(dicts[i]))
+        json_obj = json.dumps(python_obj,indent=4)
+        with open(f"{filepath}/{filenames[i]}","w") as file:
+            file.write(json_obj)
+
+
+def json_load(filepath : str ="", filenames : list = []) -> list:
+    """
+    Loads json dictionaries into python variables
+
+    Args:
+    filepath (str): Path to the folder enclosing the filenames. If not provided, will look for filenames in the working directory.
+    filename (list(str)): Path to the file containing data. If not provided, will look for a .jsonl or .json files in
+
+    Returns:
+    List containing python dictionaries
+    """
+    import json
+    var = []
+    for i in range(len(filenames)):
+        with open(f"{filepath}/{filenames[i]}") as file:
+            var.append(json.load(file))
+    return var
+
+def plot_hist1(hist:list =[], gpu_names:list =[],savefig = False, save="temp"):
+    """
+    Plots the Accuracy, Loss Val_Accuracy and Val_Loss of the given models in a subplot grid
+    """
+    if (len(hist) != len(gpu_names)):
+        raise ValueError("Wrong Input size")   
+    import matplotlib.pyplot as plt
+    val_acc=[]
+    val_loss=[]
+    loss=[]
+    accuracy=[]
+    metrics=[val_acc,accuracy,val_loss,loss]
+    metrics_title=["val_acc","accuracy","val_loss","loss"]
+    titles = ["A","B","C","D"]
+    for history in hist:
+        accuracy.append(history["accuracy"][:20])
+        val_acc.append(history["val_accuracy"][:20])
+        loss.append(history["loss"][:20])
+        val_loss.append(history["val_loss"][:20])
+    fig, axs = plt.subplots(2, 2, figsize=(16, 16))
+    # c=['g','r','b','orange',"black"]
+    c = ['#ca0020','#f4a582','#f7f7f7','#92c5de','#0571b0']
+    line_styles = ['-', '--', '-.', ':']
+    min_pixels = 900
+    max_pixels = 3000
+    dpi = 450
+    width_in_inches = max(min_pixels / dpi, 3)
+    height_in_inches = max(min_pixels / dpi, 3)
+    width_in_inches = min(width_in_inches, max_pixels / dpi)
+    height_in_inches = min(height_in_inches, max_pixels / dpi)
+    
+    fig, axs = plt.subplot_mosaic([['a)', 'b)'], ['c)', 'd)']], layout='constrained')
+    for j in range(len(metrics)):
+        for i, (label, ax) in enumerate(axs.items()):
+            if label[0] == chr(97 + j):
+                for k, history in enumerate(hist):
+                    ax.plot(metrics[j][k], c=c[k], linestyle=line_styles[k % len(line_styles)])
+                ax.set_xlabel("epochs", fontsize=10)
+                ax.set_ylabel(f"{metrics_title[j]}", fontsize=10)
+                ax.annotate(label, xy=(0, 1), xycoords='axes fraction',
+                            xytext=(+0.05, -0.05), textcoords='offset points',
+                            fontsize=10, ha='left', va='top')
+                ax.xaxis.set_major_locator(plt.MaxNLocator(12))
+                ax.yaxis.set_major_locator(plt.MaxNLocator(12))
+                ax.tick_params(axis='both', which='major', labelsize=8)
+                ax.legend(fontsize=8)
+
+    plt.tight_layout()
+    # plt.savefig(f"plot_model/{save}.png", dpi=dpi, bbox_inches='tight')
+    plt.show()
+
+
+def plot_hist2(hist:list =[], gpu_names:list =[],savefig = False, save="temp"):
+    """
+    Plots the Accuracy, Loss Val_Accuracy and Val_Loss of the given models in a subplot grid
+    """
+    if (len(hist) != len(gpu_names)):
+        raise ValueError("Wrong Input size")   
+    import matplotlib.pyplot as plt
+    val_acc=[]
+    val_loss=[]
+    loss=[]
+    accuracy=[]
+    metrics=[val_acc,accuracy,val_loss,loss]
+    metrics_title=["val_acc","accuracy","val_loss","loss"]
+    for history in hist:
+        accuracy.append(history["accuracy"][:20])
+        val_acc.append(history["val_accuracy"][:20])
+        loss.append(history["loss"][:20])
+        val_loss.append(history["val_loss"][:20])
+
+    # plt.figure(figsize=(16,16))
+    # c=['g','r','b','orange',"black"]
+    c = ['#ca0020','#f4a582','#92c5de','#0571b0']
+    line_styles = ['-', '--', '-.', ':']
+    min_pixels = 900
+    max_pixels = 3000
+    dpi = 1000
+    width_in_inches = max(min_pixels / dpi, 3)
+    height_in_inches = max(min_pixels / dpi, 3)
+    width_in_inches = min(width_in_inches, max_pixels / dpi)
+    height_in_inches = min(height_in_inches, max_pixels / dpi)
+    
+    for j in range(len(metrics)):
+        # plt.subplot(2,2,j+1)
+        plt.figure(figsize=(width_in_inches, height_in_inches), dpi=dpi)
+        for i in range(len(hist)):
+            plt.plot(metrics[j][i],c=c[i],label=gpu_names[i])
+        plt.title(f"epochs vs {metrics_title[j]}")
+        plt.xlabel("epochs", fontsize=7)
+        plt.ylabel(metrics_title[j], fontsize=7)
+        plt.legend()
+        plt.xticks(fontsize=6)
+        plt.yticks(fontsize=6)
+        # plt.savefig(f"plot_model/{metrics_title[j]}.png", dpi=dpi, bbox_inches='tight')
+        plt.show()
