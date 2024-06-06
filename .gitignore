@@ -1,9 +1,10 @@
-fer2013*/
+fer2013*
 .vscode
 data/
 __pycache__
 high
 models/
+history_var
 history
 *.pth
 *.txt
