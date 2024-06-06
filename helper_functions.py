@@ -1,5 +1,5 @@
-### We create a bunch of helpful functions throughout the course.
-### Storing them here so they're easily accessible.
+## We create a bunch of helpful functions throughout the course.
+## Storing them here so they're easily accessible.
 
 import tensorflow as tf
 
@@ -286,77 +286,3 @@ def calculate_results(y_true, y_pred):
                   "recall": model_recall,
                   "f1": model_f1}
   return model_results
-
-def plot_hist(hist:list =[], gpu_names:list =[],savefig = False):
-    """
-    Plots the Accuracy, Loss Val_Accuracy and Val_Loss of the given models in a subplot grid
-    """
-    if (len(hist) != len(gpu_names)):
-        raise ValueError("Wrong Input size")   
-    import matplotlib.pyplot as plt
-    val_acc=[]
-    val_loss=[]
-    loss=[]
-    accuracy=[]
-    metrics=[val_acc,accuracy,val_loss,loss]
-    metrics_title=["val_acc","accuracy","val_loss","loss"]
-    for history in hist:
-        accuracy.append(history["accuracy"][:20])
-        val_acc.append(history["val_accuracy"][:20])
-        loss.append(history["loss"][:20])
-        val_loss.append(history["val_loss"][:20])
-
-    # plt.figure(figsize=(16,16))
-    # c=['g','r','b','orange',"black"]
-    c=["r","g","b","black"]
-    for j in range(len(metrics)):
-        # plt.subplot(2,2,j+1)
-        plt.figure(figsize=(10,7))
-        for i in range(len(hist)):
-            plt.plot(metrics[j][i],c=c[i],label=gpu_names[i])
-        plt.title(f"epochs vs {metrics_title[j]}")
-        plt.xlabel("epochs")
-        plt.ylabel(metrics_title[j])
-        plt.legend()
-        plt.savefig(f"plot_model/plot_dcnn_gpu/{metrics_title[j]}")
-    # if savefig:
-    #     plt.savefig('plot_model/gpu_dcnn')
-    plt.show()
-
-def json_dump(filepath: str = "", filenames: list = [], dicts: list = []) -> None:
-    """
-    Saves dictionary variables as json files
-
-    Args:
-    filepath (str): path to save the file. Default is current directory
-    filename (list of strings): names for each saved file
-    dicts (list of dictionaires): data to be stored in a file
-
-    Returns: None
-
-    """
-    import json
-    if (len(filenames) != len(dicts)):
-        raise ValueError("Input size Incompatible")
-    for i in range(len(filenames)):
-        python_obj = eval(str(dicts[i]))
-        json_obj = json.dumps(python_obj,indent=4)
-        with open(f"{filepath}/{filenames[i]}","w") as file:
-            file.write(json_obj)
-def json_load(filepath : str ="", filenames : list = []) -> list:
-    """
-    Loads json dictionaries into python variables
-
-    Args:
-    filepath (str): Path to the folder enclosing the filenames. If not provided, will look for filenames in the working directory.
-    filename (list(str)): Path to the file containing data. If not provided, will look for a .jsonl or .json files in
-
-    Returns:
-    List containing python dictionaries
-    """
-    import json
-    var = []
-    for i in range(len(filenames)):
-        with open(f"{filepath}/{filenames[i]}") as file:
-            var.append(json.load(file))
-    return var
